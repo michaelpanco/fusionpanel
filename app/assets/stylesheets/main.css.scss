@@ -1,0 +1,85 @@
+// Place all the styles related to the main controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+a {
+    color: #0B4B6B;
+}
+.nav li a:hover, .nav li a:focus {
+    background-color: #dfeaf0;
+}
+.navbar-text a{
+	color:#fff !important;
+}
+.mt0{
+	margin-top:0px;
+}
+.mt10{
+	margin-top:10px;
+}
+.mb20{
+	margin-bottom:20px;
+}
+.fsize14{
+	font-size:14px;
+}
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    height: 40px;
+    padding: 10px;
+
+}
+.sidebar-nav {
+    padding: 9px 0;
+}
+.sidebar-nav.well {
+	border-radius:0;
+	box-shadow:none;
+	background:#F2F7FA;
+}
+.well .nav-list > li > a {
+    padding: 7px 15px;
+}
+.nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
+    background-color: #479CCF;
+	border-top:1px solid #348BB0;
+border-bottom:1px solid #348BB0;
+}
+.nav-header {
+font-weight:normal;
+font-size:12px;
+}
+h1 {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.main-content{
+	background: none repeat scroll 0 0 white;
+    border: 1px solid #E3E3E3;
+    padding: 20px;
+}
+
+.navbar .brand {
+font-size:14px;
+}
+#canvasDIV{
+height: 300px;
+}
+.last_activity_label{
+  color: #0B4B6B;
+    font-size: 18px;
+    margin: 20px 0;
+}
+.btn-wrapper{
+   margin: 20px 0;
+}
+#graph-filter{
+  margin-bottom:20px;
+}
+.btn-pull-container{
+  width:100px; 
+}
+@media (max-width: 480px) { 
+.no-phone-view{
+display:none;
+}
+ }

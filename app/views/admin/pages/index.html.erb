@@ -1,0 +1,160 @@
+<% if @my_permissions.include?("can_modify_pages") %>
+<div class="btn-group">
+    <a id="add-page" class="btn" data-no-turbolink="true" href="<%= admin_add_page_path %>"><i class="icon-plus"></i> Create Page</a>
+    <%= link_to raw('<i class="icon-remove"></i> Delete Page(s)'), "javascript:void(0)", id: "delete-pages", class: "btn", "ng-click"=>"deleteSelected('#delete_pages')", "ng-disabled" => "deleteButton" %>
+</div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+
+<div class="row-fluid">
+    <div class="span4">
+        <h1><%= params["controller"].capitalize %></h1>
+    </div>
+    <div class="span8 ">
+        <div class="pull-right">
+            <div class="input-append">
+                <form name="search_page" method="GET" action="<%= admin_page_path %>">
+                    <input name="search_title" class="span9" id="appendedInputButton" type="text" placeholder="Enter Page Title" value="<%= @search_keyword %>">
+                    <button class="btn h40" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% if @search_keyword %>
+    <div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>    <% end %>
+</div>
+<div class="mb20">
+    <div class="btn-group">
+        <button class="btn">
+            <%= @cat_filter_value %>
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <% @categories.each do |category| %>
+            <li>
+                <%= link_to category.name, :category => category.id, :creator => params[:creator], :status => params[:status] %>
+            </li>
+            <% end %>
+            <li class="divider"></li>
+            <li>
+                <%= link_to "All Category", :category => "all", :creator => params[:creator], :status => params[:status] %>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn">
+            <%= @stat_filter_value %>
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <%= link_to "Active", :category => params[:category], :creator => params[:creator], :status => "active" %>
+            </li>
+            <li>
+                <%= link_to "Inactive", :category => params[:category], :creator => params[:creator], :status => "inactive"  %>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <%= link_to "All Status", :status => "all", :creator => params[:creator], :category => params[:category] %>
+            </li>
+        </ul>
+    </div>
+
+    <div class="btn-group hidden-phone">
+        <button class="btn">
+            <%= @creator_filter_value %>
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <% @creators.each do |creator| %>
+            <li>
+                <%= link_to creator.fullname, :creator => creator.id, :status => params[:status], :category => params[:category] %>
+            </li>
+            <% end %>
+            <li class="divider"></li>
+            <li>
+                <%= link_to "All Creator", :creator => "all", :status => params[:status], :category => params[:category] %>
+            </li>
+        </ul>
+    </div>
+</div>
+<% unless @pages.empty?  %>
+<% delete_confirm = 'return confirm("Are you sure you want to delete the selected page? \nNote: There\'s no undo.");return false;' %>
+<%= form_tag(admin_delete_page_path, :id => 'delete_pages', method: "POST", :onsubmit => delete_confirm ) do %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% if @my_permissions.include?("can_modify_pages") %>
+            <th><%= check_box_tag "page_all", "all", false, :id => "page_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @pages.count.to_s + ")"  %></th>
+            <% end %>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Created By</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th class="hidden-phone">Last Modified</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @pages.each do |page| %>
+        <tr>
+            <% if @my_permissions.include?("can_modify_pages") %>
+            <td><%= check_box_tag "page_ids[]", page.id, false, :class => 'checkbox_item', :id => "user_#{page.id}", "ng-model"=>"page"+page.id.to_s, "ng-checked" => "masters","ng-click"=>"selectItem(page"+page.id.to_s+")" %></td>
+            <% end %>
+            <td><%= page.id %></td>
+            <% age_name_dots = (page.content_title.length >= 55 )? "..." : "" %>
+            <td><%= link_to page.content_title[0,55] + age_name_dots, admin_edit_page_path(@admin_slug, page.id), 'data-no-turbolink' => true, 'title' => page.content_title  %></td>
+            <% if page.user.present? %>
+            <td><%= page.user.fullname %></td>
+            <% else %>
+            <td>Unknown</td>
+            <% end %>
+            <% if page.category.present? %>
+            <td><%= page.category.name %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+            <% if page.status == "active" %>
+            <td><span class="label label-success"><%= page.status %></span></td>
+            <% else %>
+            <td><span class="label"><%= page.status %></span></td>
+            <% end %>
+            <td class="hidden-phone"><%= page.modified %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<% end %>
+<div class="pull-right">
+    <%= paginate @pages %>
+</div>
+<div style="clear:both"></div>
+<% else %>
+<% if @record_count > 0  %>
+<p>
+    No results were found for your request! <a href="<%= admin_page_path %>">Back to Pages.</a>
+</p>
+<% else %>
+<p>
+    No Pages found. <a href="<%= admin_add_page_path %>">create now?</a>
+</p>
+<% end %>
+<% end %>

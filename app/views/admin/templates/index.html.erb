@@ -1,0 +1,98 @@
+<% if @my_permissions.include?("can_modify_templates") %>
+<div class="btn-group">
+    <a id="add-template" class="btn" data-no-turbolink="true" href="<%= admin_add_template_path %>"><i class="icon-plus"></i> Create Template</a>
+    <%= link_to raw('<i class="icon-remove"></i> Delete Template(s)'), "javascript:void(0)", id: "delete-pages", class: "btn", "ng-click"=>"deleteSelected('#delete_pages')", "ng-disabled" => "deleteButton" %>
+</div>
+<% end %>
+<div class="row-fluid">
+    <div class="span4">
+        <h1><%= params["controller"].capitalize %></h1>
+    </div>
+    <div class="span8 ">
+        <div class="pull-right">
+            <div class="input-append">
+                <form name="search_page" method="GET" action="<%= admin_template_path %>">
+                    <input name="search" class="span9" id="appendedInputButton" type="text" placeholder="Enter Template Name" value="<%= @search_keyword %>">
+                    <button class="btn h40" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% if @search_keyword %>
+    <div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>
+    <% end %>
+</div>
+
+<% if flash[:error] %>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+
+<% unless @templates.empty?  %>
+<% delete_confirm = 'return confirm("Are you sure you want to delete the selected template? \nNote: There\'s no undo.");return false;' %>
+<%= form_tag(admin_delete_template_path, :id => 'delete_pages', method: "POST", :onsubmit => delete_confirm ) do %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% if @my_permissions.include?("can_modify_templates") %>
+            <th><%= check_box_tag "template_all", "all", false, :id => "template_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @templates.count.to_s + ")"   %></th>
+            <% end %>
+            <th>ID</th>
+            <th>Template Name</th>
+            <th>Pages</th>
+            <th>Last Modified</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @templates.each do |template| %>
+        <tr>
+            <% if @my_permissions.include?("can_modify_templates") %>
+            <td><%= check_box_tag "template_ids[]", template.id, false, :class => 'checkbox_item', :id => "template_#{template.id}", "ng-model"=>"template" + template.id.to_s, "ng-checked" => "masters","ng-click"=>"selectItem(template"+template.id.to_s+")"   %></td>
+            <% end %>
+            <td><%= template.id %></td>
+            <td><%= link_to template.name, admin_edit_template_path(@admin_slug, template.id), 'data-no-turbolink' => true  %></td>
+            <% if template.page.count > 0 %>
+            <td><%= link_to template.page.count, admin_page_path(:category => template.id), :class => "badge badge-info" %></td>
+            <% else %>
+            <td><span class="badge"><%= template.page.count %></span></td>
+            <% end %>
+            <td><%= template.modified %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<% end %>
+<div class="pull-right">
+    <%= paginate @templates %>
+</div>
+<div style="clear:both"></div>
+<% else %>
+<% if @record_count > 0  %>
+<p>
+    No results were found for your request! <a href="<%= admin_template_path %>">Back to Templates.</a>
+</p>
+<% else %>
+<p>
+    No Template found. <a href="<%= admin_add_template_path %>">create now?</a>
+</p>
+<% end %>
+<% end %>

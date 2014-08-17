@@ -1,0 +1,30 @@
+<% if params[:controller] == "main" %>
+<title>Dashboard - Fusionpanel Administration</title>
+<% else %>
+<title><%= params[:controller].capitalize %> - Fusionpanel Administration</title>
+<% end %>
+<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+<%= stylesheet_link_tag "admin", params[:controller], "data-turbolinks-track" => true %>
+<%= stylesheet_link_tag "fancybox", "data-turbolinks-track" => true if params[:controller] == "assets" %>
+<%= stylesheet_link_tag "codemirror/codemirror", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "admin", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "fancybox", "data-turbolinks-track" => true if params[:controller] == "assets" %>
+<% if params[:controller] == "settings" or params[:controller] == "assets" or params[:controller] == "templates"  %>
+<%= javascript_include_tag "codemirror/codemirror", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/xml", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/javascript", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/css", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/htmlmixed", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/htmlembedded", "data-turbolinks-track" => true %>
+<%= javascript_include_tag "codemirror/lib/ruby", "data-turbolinks-track" => true %>
+<% end %>
+<%= javascript_include_tag "Chart", "data-turbolinks-track" => true %>
+<%= csrf_meta_tags %>
+<%= favicon_link_tag 'favicon.png' %>
+<%= javascript_tag do %>
+  window.appController = "<%= params[:controller] %>";
+  window.authenticityToken = "<%= form_authenticity_token %>";
+  window.baseURL = "<%= root_url %>";
+  window.adminSlug = "<%= @admin_slug %>";
+<% end %>

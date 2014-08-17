@@ -1,0 +1,47 @@
+<div class="mb20">
+	<a href="<%= @back_url %>" class="btn"><i class="icon-eye-open"></i> Back to Web Traffic</a>
+</div>
+
+<div class="row-fluid">
+	<h1>Visitor Details</h1>
+</div>
+
+<div class="row-fluid">
+	
+	
+	<div class="span7">
+		<div class="row-fluid">
+			<div class="span3"><strong>IP Address</strong></div>
+			<div class="span9"><%= @ip_address %></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>Country</strong></div>
+			<div class="span9"><div class="data_details" id="country" data-ipaddress="<%= @ip_address %>" ><%=image_tag("glass_sphere.gif", alt: "Loading...")%></div></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>Region</strong></div>
+			<div class="span9"><div class="data_details" id="region" data-ipaddress="<%= @ip_address %>" ><%=image_tag("glass_sphere.gif", alt: "Loading...")%></div></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>City</strong></div>
+			<div class="span9"><div class="data_details" id="city" data-ipaddress="<%= @ip_address %>" ><%=image_tag("glass_sphere.gif", alt: "Loading...")%></div></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>Internet Provider</strong></div>
+			<div class="span9"><div class="data_details" id="isp" data-ipaddress="<%= @ip_address %>" ><%=image_tag("glass_sphere.gif", alt: "Loading...")%></div></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>Date Visited</strong></div>
+			<div class="span9"><%= @date_visited %></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span3"><strong>Browser</strong></div>
+			<div class="span9"><%= @browser %></div>
+		</div>
+	</div>
+	
+	<div class="span5">
+		<div class="data_details" id="map" data-ipaddress="<%= @ip_address %>" >
+		</div>
+	</div>
+</div>

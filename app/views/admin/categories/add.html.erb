@@ -1,0 +1,47 @@
+<div class="btn-group">
+    <a href="<%= admin_category_path %>" class="btn"><i class="icon-th-list"></i> Back to Categories</a>
+</div>
+<div class="row-fluid">
+    <h1>Create Category</h1>
+</div>
+<% if flash[:error] %>
+    <div class="alert alert-error">
+        <% flash[:error].each do |error_message| %>
+        <%= error_message %> <br />
+        <% end %>
+    </div>
+<% end %>
+
+<%= form_for :category, url: admin_create_category_path, :html => {:name => 'add_category'} do |category_form| %>
+    <span class="input_label">Category Name</span>
+    <%= category_form.text_field :name, :class=>"input-block-level", "ng-model"=>"categoryName" %>
+    <span class="input_label">Category Slug</span>
+    <%= category_form.text_field :slug, :class=>"input-block-level", "ng-model"=>"categorySlug" %>
+    
+    <div class="btn-group">
+        <button class="btn">
+            No Category
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <% @category_parent_lists.each do |category| %>
+            <li>
+                <%= link_to category.name, :category => category.id, :creator => params[:creator], :status => params[:status] %>
+            </li>
+            <% end %>
+            <li class="divider"></li>
+            <li>
+                <a href="" ng-click="selectParentCategory('none','0')">none</a>
+                <% link_to "All Category", :category => "all", :creator => params[:creator], :status => params[:status] %>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="btn-holder">
+        <a href="<%= admin_category_path %>" class="btn btn-large pull-right">Cancel</a>
+        <%= submit_tag("Save",:class=>"btn btn-primary btn-large pull-right mr5") %>
+        <div class="clear"></div>
+    </div>
+<% end %>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<%= render "layouts/fusionpanel/partial/header" %>
+</head>
+<body ng-app="fusionpanel">
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container-fluid">
+			<button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="<%= admin_path %>" class="brand"><%=image_tag("fusionpanel_small.png", alt: "Fusionpanel", width: 136)%> - <%= session[:admin_title] %></a>
+			<a style="color:#ffffff" target="_blank" href="<%= root_url %>" class="brand">View actual site <%=image_tag("eye_icon.png", alt: "View site", width: 22)%></a>
+			<div class="nav-collapse collapse">
+				<p class="navbar-text pull-right">
+					<img src="http://www.gravatar.com/avatar/<%= session[:gravatar_hash] %>?s=28" class="mr5"> 
+					<a class="navbar-link" href="<%= root_url + session[:admin_slug] + "/users/" + session[:username] %>"><%= session[:fullname] %></a> (<%= session[:role] %>) |
+					<a class="navbar-link" href="<%= admin_logout_path %>">Logout</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+<% set_active_nav = Hash[params["controller"] => ' class="active"'] %>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list">
+					<li class="nav-header">Website</li>
+					<li<%= raw set_active_nav["admin"] %>><a href="<%= admin_path %>"><i class="icon-home"></i> Dashboard</a></li>
+					<% if @my_permissions.include?("can_view_pages") %>
+					<li<%= raw set_active_nav["pages"] %>><a href="<%= admin_page_path %>"><i class="icon-file"></i> Pages</a></li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_categories") %>
+					<li<%= raw set_active_nav["categories"] %>><a href="<%= admin_category_path %>"><i class="icon-th-list"></i> Categories</a></li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_widgets") %>
+					<li<%= raw set_active_nav["widgets"] %>><a href="<%= admin_widget_path %>"><i class="icon-move"></i> Widgets</a></li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_assets") %>
+					<li<%= raw set_active_nav["assets"] %>><a href="<%= admin_asset_path %>"><i class="icon-picture"></i> Assets</a></li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_users") %>
+					<li<%= raw set_active_nav["users"] %>><a href="<%= admin_user_path %>"><i class="icon-user"></i> Users</a></li>
+					<% end %>
+					<% if (@my_permissions & ["can_view_settings", "can_view_templates"]).present? %>
+					<li class="nav-header">Configuration</li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_settings") %>
+					<li<%= raw set_active_nav["settings"] %>><a href="<%= admin_setting_path %>"><i class="icon-wrench"></i> Settings</a></li>
+					<% end %>
+					<% if @my_permissions.include?("can_view_templates") %>
+					<li<%= raw set_active_nav["templates"] %>><a href="<%= admin_template_path %>"><i class="icon-th-large"></i> Templates</a></li>
+					<% end %>
+					<li class="nav-header">Logs</li>
+                    <li<%= raw set_active_nav["webtraffic"] %>><a href="<%= admin_webtraffic_path %>"><i class="icon-eye-open"></i> Web Traffic</a></li>
+                    <li<%= raw set_active_nav["adminactivities"] %>><a href="<%= admin_adminactivities_path %>"><i class="icon-lock"></i> Admin Activities</a></li>
+					<li class="nav-header">Info</li>
+					<li<%= raw set_active_nav["about"] %>><a href="<%= admin_about_path %>"><i class="icon-info-sign"></i> About</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="span10">
+			<div class="main-content" ng-controller="<%= params[:controller] %>">
+			    
+				<%= yield %>			
+			</div>
+		</div>
+	</div>
+</div>
+<% if params[:controller] == "settings"  %>
+<script>
+  var editor404page = CodeMirror.fromTextArea(document.getElementById("page404content"), {
+    lineNumbers: true,
+    mode: "application/x-ejs",
+    indentWithTabs: true,
+   
+  });
+  var editorOfflinepage = CodeMirror.fromTextArea(document.getElementById("pageOfflinecontent"), {
+    lineNumbers: true,
+    mode: "application/x-ejs",
+    indentWithTabs: true,
+   
+  });
+   $('#404PageModal').on('shown', function() { editor404page.refresh() })
+   $('#offlinePageModal').on('shown', function() { editorOfflinepage.refresh() })
+</script>
+<% end %>
+<% if params[:controller] == "templates"  %>
+<script>
+  var templateEditor = CodeMirror.fromTextArea(document.getElementById("pageTemplatecontent"), {
+    lineNumbers: true,
+    mode: "application/x-ejs",
+    indentWithTabs: true,
+  });
+</script>
+<% end %>
+<script data-turbolinks-track="true" src="/assets/angular.min.js?body=1"></script>
+<% if params[:controller] == "assets"  %>
+<script data-turbolinks-track="true" src="/assets/bootstrap-filestyle.min.js?body=1"></script>
+<%= javascript_tag do %>
+        $(document).ready(function() {
+            $('.fancybox').fancybox();
+        });
+<% end %>
+<script>
+  var editorPage = CodeMirror.fromTextArea(document.getElementById("fileContent"), {
+    lineNumbers: true,
+    mode: "<%= @asset_file_type %>",
+    indentWithTabs: true,
+   
+  });
+   $('#fileContent').on('shown', function() { editorPage.refresh() })
+</script>
+<% end %>
+<%= javascript_include_tag params[:controller] %>
+</body>
+</html>

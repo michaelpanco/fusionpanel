@@ -1,0 +1,236 @@
+// Place all the styles related to the admin controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+    padding-bottom: 40px;
+    background-color: #F5F5F5;
+}
+.form-signin, .form-create-user {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    max-width: 370px;
+    padding: 19px 29px 29px;
+}
+a {
+    color: #0B4B6B;
+}
+a.notfound{
+  color:#FF0000; 
+}
+.nav li a:hover, .nav li a:focus {
+    background-color: #dfeaf0;
+}
+.navbar-text a{
+    color:#fff !important;
+}
+.margin0{
+    margin:0px !important;
+}
+.capitalize{
+  text-transform:capitalize;
+}
+.fsize12{
+    font-size:12px;
+}
+.fsize18{
+    font-size:18px;
+}
+.fsize20{
+    font-size:20px;
+}
+.cFaded{
+    color:#afafaf;
+}
+.mt0{
+    margin-top:0px;
+}
+.mt10{
+    margin-top:10px;
+}
+.mt15{
+    margin-top:15px;
+}
+.mb10{
+    margin-bottom:10px;
+}
+.mb20{
+    margin-bottom:20px;
+}
+.pad1015{
+padding: 10px 15px;
+}
+.nopadding{
+    padding:0;
+}
+.fsize14{
+    font-size:14px !important;
+}
+.ml30{
+    margin-left:30px; 
+}
+.mr5{
+    margin-right:5px;
+}
+.mr10{
+    margin-right:10px;
+}
+.mb0{
+    margin-bottom:0px;
+}
+.h40{
+    height:40px;
+}
+.h90{
+    height:90px !important 
+}
+.h150{
+    height:150px !important 
+}
+.h300{
+    height:300px !important 
+}
+.w75{
+    width:75px;
+}
+.w80{
+    width:80px;
+}
+.w100{
+    width:100px;
+}
+.w140{
+    width:140px;
+}
+.w150{
+    width:150px; 
+}
+.w155{
+    width:155px; 
+}
+.w180{
+    width:180px;
+}
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    height: 40px;
+    padding: 10px;
+
+}
+.sidebar-nav {
+    padding: 9px 0;
+}
+.sidebar-nav.well {
+    border-radius:0;
+    box-shadow:none;
+    background:#F2F7FA;
+}
+.well .nav-list > li > a {
+    padding: 7px 15px;
+}
+.nav-list > .active > a, .nav-list > .active > a:hover, .nav-list > .active > a:focus {
+    background-color: #479CCF;
+    border-top:1px solid #348BB0;
+    border-bottom:1px solid #348BB0;
+}
+.nav-header {
+    font-weight:normal;
+    font-size:12px;
+}
+.clear{
+    clear:both;
+}
+.btn-holder{
+    margin-top:20px;
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #0B4B6B;
+}
+h1 {
+    font-size: 24px;
+    font-weight: normal;
+}
+h2 {
+    font-size: 18px;
+    font-weight: normal;
+}
+h3#modal-header{
+  	font-size: 24px;
+    font-weight: normal;
+    margin: 10px 0;
+}
+.input_label{
+    display: block;
+    margin-bottom: 10px;
+}
+.main-content{
+    background: none repeat scroll 0 0 white;
+    border: 1px solid #E3E3E3;
+    padding: 20px;
+}
+.fileitem{
+   float: left;
+    height: 90px;
+    margin: 5px 10px;
+    padding: 0;
+    width: 110px;
+}
+.file-new{
+   margin-left: -15px;
+    text-align: center;
+}
+.dirname{
+   font-size: 14px;
+    line-height: 30px;
+    margin-top: 5px;
+
+}
+.fix-textarea-width{
+padding-right:20px;
+}
+textarea.fullwidth{
+    width:100%;
+}
+.navbar .brand {
+    font-size:14px;
+}
+.pagination span a{
+    border: 1px solid #DDDDDD;
+    padding: 5px 10px;
+}
+.pagination span.current a, .pagination span a:hover{
+    background: none repeat scroll 0 0 #269BC6;
+    border: 1px solid #269BC6;
+    color: #FFFFFF;
+    text-decoration:none;
+}
+
+.create-category-div{
+    background: none repeat scroll 0 0 #F5F5F5;
+    overflow: hidden;
+    padding: 0 20px 20px;
+}
+.modal-body {
+    overflow-y: visible;
+}
+.not-found-container{
+ 	  background: none repeat scroll 0 0 #FFFFFF;
+    margin: 0 auto;
+    padding: 30px;
+    width: 400px;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.CodeMirror {
+  border: 1px solid #CCCCCC;
+  border-radius: 5px;
+}
+.modal form{
+  margin:0px
+}
+.forgot-container{
+   margin: 0 auto 10px;
+    width: 420px;
+}

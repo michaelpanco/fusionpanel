@@ -1,0 +1,64 @@
+<div class="btn-group">
+    <a href="<%= admin_widget_path %>" class="btn"><i class="icon-move"></i> Back to Widgets</a>
+</div>
+<div class="row-fluid">
+    <div class="span4">
+        <h1>Create New Widget</h1>
+    </div>
+    <div class="span8">
+        <div class="pull-right">
+            <div class="btn-holder margin0">
+                <a href="<%= admin_widget_path %>" class="btn btn-large pull-right">Cancel</a>
+                <a href="javascript:void(0)" class="btn btn-primary btn-large mr5 pull-right" onclick="create_new_widget.submit();">Save</a>
+            </div>
+        </div>
+    </div>
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+	<button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+<%= form_for :widget, url: admin_create_widget_path, :html => {:name => 'create_new_widget'}  do |widget_form| %>
+<span class="input_label">Widget Name</span>
+<%= widget_form.text_field :title, :class=>"input-block-level", "ng-model"=>"widgetName", "ng-change"=>"populateAlias()", "ng-init"=>"widgetName='" + @params_widget_title + "'" %>
+<div class="container-fluid nopadding">
+    <div class="row-fluid">
+        <div class="span5">
+            <span class="input_label">Alias</span><%= widget_form.text_field :alias, :class=>"input-block-level", "ng-model"=>"widgetAlias", "ng-init"=>"widgetAlias='" + @params_widget_alias + "'" %>
+        </div>
+
+        <div class="span2">
+            <span class="input_label">Status</span>
+            <%= widget_form.hidden_field :status, :class=>"status", :value=>"{{statusValue.toLowerCase()}}", "ng-init"=>"statusValue='" + @params_widget_status + "'" %>
+            <div class="btn-group mb10">
+                <a href="javascript:void(0)" class="btn btn-stat btn-large w140">{{statusValue}}</a>
+                <button data-toggle="dropdown" class="btn btn-large dropdown-toggle">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu status-menu">
+                    <li>
+                        <a href="" ng-click="selectStatus('Active')">Active</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="selectStatus('Inactive')">Inactive</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<span class="input_label">Widget Content</span>
+<%= cktext_area_tag("widget[content]", "", :height => 400, :uiColor => "#E3E3E3") %>
+<div class="btn-holder">
+    <a href="<%= admin_widget_path %>" class="btn btn-large pull-right">Cancel</a>
+    <%= submit_tag("Save",:class=>"btn btn-primary btn-large pull-right mr5") %>
+    <div class="clear"></div>
+</div>
+<% end %>

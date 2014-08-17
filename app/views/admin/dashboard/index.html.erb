@@ -1,0 +1,78 @@
+<h1>Dashboard</h1>
+Overall Visits : <strong id="overall-visit-count" class="visitor_info" data-load-type="overall"><%=image_tag("spinner_small.gif", alt: "Loading...")%></strong>,
+Month's Visits : <strong id="mont-visit-count" class="visitor_info" data-load-type="month"><%=image_tag("spinner_small.gif", alt: "Loading...")%></strong>,
+Today's Visits : <strong id="today-visit-count" class="visitor_info" data-load-type="day"><%=image_tag("spinner_small.gif", alt: "Loading...")%></strong>
+<div class="btn-wrapper">
+	<div class="row-fluid">
+		<div class="span6">
+			<a href="<%= @month_btn_path %>" class="btn<%= @month_btn %>">View Report by Months</a>
+			<a href="<%= @day_btn_path %>" class="btn<%= @day_btn %>">View Report by Days</a>
+		</div>
+		<div class="span6"><a href="<%= admin_webtraffic_path %>" class="btn pull-right"><i class="icon-align-justify"></i> View traffic Logs</a></div>
+	</div>
+</div>
+<div id="graph-filter">
+	Year :
+	<div class="btn-group" style="margin-right: 10px;">
+		<button class="btn btn-pull-container" ng-init="selectedYear='<%= @graph_year_filter %>'">{{selectedYear}}</button>
+		<button data-toggle="dropdown" class="btn dropdown-toggle"><span class="caret"></span></button>
+		
+		<ul class="dropdown-menu">
+		  <% @year_list.each do |year| %>
+		    <%
+		    if @current_year == year
+			    if Date::MONTHNAMES.index(@current_month).to_i < Date::MONTHNAMES.index(@graph_month_filter).to_i
+			    	month_set = '&month=' + @current_month
+			    else
+			    	month_set = @month_filter
+			    end
+			else
+				month_set = @month_filter
+			end
+
+		    %>
+		  	<li><a href="<%= admin_path %>?viewtype=<%= @graph_view_type %>&year=<%= year %><%= month_set %>" ng-click="selectYear('<%= year %>')"><%= year %></a></li>
+		  <% end %>
+		</ul>
+	</div>
+	<% if @graph_view_type == "days" %>
+	 Month : 
+	<div class="btn-group">
+		<button class="btn btn-pull-container" ng-init="selectedMonth='<%= @graph_month_filter %>'">{{selectedMonth}}</button>
+		<button data-toggle="dropdown" class="btn dropdown-toggle"><span class="caret"></span></button>
+		<ul class="dropdown-menu">
+		  <% @month_selection.each do |month| %>
+		  <li><a href="<%= admin_path %>?viewtype=days<%= @year_filter %>&month=<%= month %>" ng-click="selectMonth('<%= month %>')"><%= month %></a></li>
+		  <% end %>
+		</ul>
+	</div>
+	<% end %>
+</div>
+<%= @graph_data.html_safe %>
+<% unless @latest_activity.empty?  %>
+<div class="row-fluid">
+	<div class="span12">
+		<p class="last_activity_label">Latest Activities</p>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Date and Time</th>
+					<th>Activity</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% @latest_activity.each do |activity| %>
+				<tr>
+					<td><%= activity.date_created %></td>
+					<% if activity.user %>
+					<td><a href="<%= root_url + session[:admin_slug] + "/users/" + activity.user.username %>"><%= activity.user.fullname %></a> <%= activity.activity_message.html_safe %></td>
+					<% else %>
+					<td>(Deleted User) <%= activity.activity_message.html_safe %></td>
+					<% end %>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>
+<% end %>

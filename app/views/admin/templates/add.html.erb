@@ -1,0 +1,30 @@
+<div class="btn-group">
+    <a href="<%= admin_template_path %>" class="btn"><i class="icon-th-large"></i> Back to Templates</a>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <h1>Create New Template</h1>
+    </div>
+
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+<%= form_for :template, url: admin_create_template_path, :html => {:name => 'create_new_template'}  do |template_form| %>
+<span class="input_label">Template Name</span>
+<%= template_form.text_field :name, :class=>"input-block-level" %>
+
+<span class="input_label">Template Content</span>
+<textarea id="pageTemplatecontent" name="filetemplatecontent" class="input-block-level w400 h300" ><%= @params_template_content %></textarea>
+  
+<div class="btn-holder">
+    <a href="<%= admin_template_path %>" class="btn btn-large pull-right">Cancel</a>
+    <%= submit_tag("Save",:class=>"btn btn-primary btn-large pull-right mr5") %>
+    <div class="clear"></div>
+</div>
+<% end %>

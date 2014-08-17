@@ -1,0 +1,34 @@
+<div class="row-fluid">
+        <h1>Admin Activities</h1>
+</div>
+<% unless @adminactivity.empty?  %>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Date and Time</th>
+				<th>Activity</th>
+
+			</tr>
+		</thead>
+		<tbody>
+		<% @adminactivity.each do |admin_activity| %>
+			<tr>
+				<td><%= admin_activity.date_created %></td>
+				<% activity_dots = (admin_activity.activity_message.length >= 85 )? " ..." : "" %>
+				<% activity = admin_activity.activity_message[0,85] + activity_dots %>
+				<% if admin_activity.user %>
+				<td><a href="<%= root_url + session[:admin_slug] + "/users/" + admin_activity.user.username %>"><%= admin_activity.user.fullname %></a> <%= activity.html_safe %></td>
+				<% else %>
+				<td>(Deleted User) <%= activity.html_safe %></td>
+				<% end %>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
+	<div class="pull-right">
+	<%= paginate @adminactivity %>
+	</div>
+	<div style="clear:both"></div>
+<% else %>
+	<p>No Activity Available</p>
+<% end %>

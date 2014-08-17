@@ -1,0 +1,35 @@
+<div class="row-fluid">
+        <h1>Web Traffic</h1>
+</div>
+<% unless @webtraffic.empty?  %>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Date and Time</th>
+				<th>IP Address</th>
+				<th>Country</th>
+				<th>Page Visited</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+		<% @webtraffic.each do |visitor_traffic| %>
+			<tr>
+				<td><%= visitor_traffic.date_visited %></td>
+				<td><%= visitor_traffic.ip %></td>
+				<td><div class="country" id="log<%= visitor_traffic.id %>" data-ipaddress="<%= visitor_traffic.ip %>"><%=image_tag("glass_sphere.gif", alt: "Loading...")%></div></td>
+				<% page_url_dots = (visitor_traffic.url.length >= 50 )? "..." : "" %>
+				<% status = visitor_traffic.status == '404' ? 'class=notfound' : '' %>
+				<td><a <%= status %> href="<%= visitor_traffic.url %>" target="_blank" title="<%= visitor_traffic.url %>"><%= visitor_traffic.url[0,50] + page_url_dots %></a></td>
+				<td><a href="<%= admin_webtraffic_details_path @admin_slug, visitor_traffic.id %>"><%=image_tag("view.png")%> View Details</a></td>
+			</tr>
+		<% end %>
+		</tbody>
+	</table>
+	<div class="pull-right">
+	<%= paginate @webtraffic %>
+	</div>
+	<div style="clear:both"></div>
+<% else %>
+	<p>No Logs Available</p>
+<% end %>

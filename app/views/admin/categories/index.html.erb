@@ -1,0 +1,140 @@
+<% if @my_permissions.include?("can_modify_categories") %>
+<div class="btn-group">
+	<a id="add-category" role="button" class="btn" data-no-turbolink="true" href="#create-category-modal" data-toggle="modal" data-backdrop="static" data-keyboard="false" ng-click="clearAddCategoryForm()"><i class="icon-plus"></i> Create Category</a>
+	<%= link_to raw('<i class="icon-remove"></i> Delete Category'), "javascript:void(0)", id: "delete-categories", class: "btn", "ng-click"=>"deleteSelected('#delete_categories')", "ng-disabled"=>"deleteButton" %>
+</div>
+<% end %>
+<div class="row-fluid">
+	<% if flash[:notice] %>
+	<div class="alert alert-success mt15">
+	<button type="button" class="close" data-dismiss="alert">x</button>
+	<%= flash[:notice].html_safe %>
+	</div>
+	<% end %>
+	<% if flash[:error] %>
+	<div class="alert alert-error mt15">
+	<button type="button" class="close" data-dismiss="alert">x</button>
+	<%= flash[:error].html_safe %>
+	</div>
+	<% end %>
+	<div class="row-fluid">
+		<div class="span5"><h1><%= params["controller"].capitalize %></h1></div>
+		<div class="span7">
+			<div class="pull-right">
+				<div class="input-append">
+					<form name="search_category" method="GET" action="<%= admin_category_path %>">
+					<input name="category_name" class="span9" id="appendedInputButton" type="text" placeholder="Enter Category Title" value="<%= @search_keyword %>">
+					<button class="btn h40" type="submit">Search</button>
+					</form>
+				</div>
+			</div>
+		</div>
+    	<% if @search_keyword %>
+        <div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>
+        <% end %>
+	</div>
+
+	<% unless @categories.empty?  %>
+		<% delete_confirm = 'return confirm("Are you sure you want to delete the selected category? \nNote: There\'s no undo.");return false;' %>
+		<%= form_tag(admin_delete_category_path, :id => 'delete_categories', method: "POST", :onsubmit => delete_confirm ) do %>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				    <% if @my_permissions.include?("can_modify_categories") %>
+					<th><%= check_box_tag "category_all", "all", false, :id => "category_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @category_count.to_s + ")" %></th>
+					<% end %>
+					<th>ID</th>
+					<th>Category Name</th>
+					<th>Slug</th>
+					<th>Parent Category</th>
+					<th>Pages</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% @categories.each do |category| %>
+				<tr>
+				    <% if @my_permissions.include?("can_modify_categories") %>
+					<td><%= check_box_tag "category_ids[]", category.id, false, :class => 'checkbox_item', :id => "category_#{category.id}", "ng-model"=>"category"+category.id.to_s, "ng-checked" => category.id == 1 ? '' : "masters","ng-click"=>"selectItem(category"+category.id.to_s+")","ng-disabled" => category.id == 1 ? 'true' : 'false' %></td>
+					<% end %>
+					<td><%= category.id %></td>
+					<% if category.id == 1 %>
+					<td><%= category.name %></td>
+					<% else %>
+    					<% if @my_permissions.include?("can_modify_categories") %>
+    					<td><%= link_to category.name, admin_edit_category_path(@admin_slug, category.id), 'data-no-turbolink' => true  %></td>
+    					<% else %>
+    					<td><%= category.name %></td>
+    					<% end %>
+					<% end %>
+					<td><%= category.slug %></td>
+					<% if category.parent_category != 0 %>
+					<td><%= category.category.name %></td>
+					<% else %>
+					<td>none</td>
+					<% end %>
+					<% if category.page.count > 0 %>
+					<td><%= link_to category.page.count, admin_page_path(:category => category.id), :class => "badge badge-info" %></td>
+					<% else %>
+					<td><span class="badge"><%= category.page.count %></span></td>
+					<% end %>
+				</tr>
+			<% end %>
+			</tbody>
+		</table>
+		<div class="pull-right">
+		<%= paginate @categories %>
+		</div>
+		<% end %>
+	<% else %>
+		<% if @record_count > 0  %>
+			<p>No results were found for your request! <a href="<%= admin_category_path %>">Back to Categories.</a></p>
+		<% else %>
+			<p>You have not created any categories. <a id="add-category" role="button" class="btn" data-no-turbolink="true"  href="#create-category-modal" data-toggle="modal"> Create Now?</a></p>
+		<% end %>
+	<% end %>
+</div>
+
+<div id="create-category-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button id="x-close-modal"  type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="modal-header">Create Category</h3>
+  </div>
+  
+  <div class="modal-body">
+    <div class="message-status" ng-bind-html-unsafe="messageStatus"></div>
+	<form name="create-new-category" id="create-new-category" class="ng-pristine ng-valid" accept-charset="UTF-8">
+        <span class="input_label">Category Name</span>
+        <input type="text" ng-model="categoryName" ng-change="populateSlug()" name="category_name" id="category_name" class="input-block-level ng-pristine ng-valid">
+        <span class="input_label">Category Slug</span>
+        <input type="text" ng-model="categorySlug" name="category_slug" id="category_slug" class="input-block-level ng-pristine ng-valid">
+        <span class="input_label">Parent Category</span>
+        <input type="hidden" name="parentCategory" value="{{parentCategoryID}}" />
+        <!-- Load Parent Category Dropdown lists -->
+        <div class="btn-group">
+        <button class="btn w150">
+            {{parentCategory}}
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <% @category_parent_lists.each do |category| %>
+            <li>
+                <a href="" ng-click="selectParentCategory('<%= category.slug %>','<%= category.id %>')"><%= category.slug %></a>
+            </li>
+            <% end %>
+            <li class="divider"></li>
+            <li>
+                <a href="" ng-click="selectParentCategory('none','0')">none</a>
+            </li>
+        </ul>
+        </div>
+        <!-- End here -->
+    </form>
+  </div>
+  
+  <div class="modal-footer">
+    <a id="create-category-cancel" ng-disabled="buttonControl" class="btn btn-large" data-dismiss="modal" aria-hidden="true" ng-click="clearMessageStatus()">Cancel</a>
+    <button ng-disabled="buttonControl" type="submit" class="btn btn-primary btn-large" ng-click="createCategory('/categories/add')" >Save</button>
+  </div>
+</div>

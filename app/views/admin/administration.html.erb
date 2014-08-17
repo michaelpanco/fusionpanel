@@ -1,0 +1,80 @@
+<h1>Dashboard</h1>
+Overall Visits : <strong>12,321</strong>
+Month's Visits : <strong>433</strong>
+Today's Visits : <strong>23</strong>
+<div class="btn-wrapper">
+<a href="" class="btn btn-info">View Report by Months</a>
+<a href="" class="btn">View Report by Days</a>
+</div>
+<div id="canvasDIV">
+
+<canvas id="canvas"></canvas>
+</div>
+<script>
+
+var canvas = document.querySelector('canvas'),
+    ctx    = canvas.getContext('2d');
+fitToContainer(canvas);
+
+ctx.fillStyle='yellow';
+for (var i=0;i<5;++i) ctx.fillRect(i*18+2,2,16,16);
+
+function fitToContainer(canvas){
+  canvas.style.width='100%';
+  canvas.style.height='100%';
+  canvas.width  = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+
+	var lineChartData = {
+		labels : ["January","February","March","April","May","June","July"],
+		datasets : [
+			{
+				fillColor : "rgba(151,187,205,0.5)",
+				strokeColor : "rgba(151,187,205,1)",
+				pointColor : "rgba(151,187,205,1)",
+				pointStrokeColor : "#fff",
+				data : [28,48,40,19,96,27,100]
+			}
+		]
+		
+	}
+
+var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData);
+</script>
+<div class="row-fluid">
+	<div class="span12">
+		<p class="last_activity_label">Latest Activities</p>
+			<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Date and Time</th>
+				<th>Activity</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Today 12:59 PM</td>
+				<td><a href="http://localhost:3001/fp-admin/users/michaelpanco">Michael Panco</a> updated <strong>jacobe.html</strong></td>
+			</tr>
+			<tr>
+				<td>Today 10:26 AM</td>
+				<td><a href="http://localhost:3001/fp-admin/users/michaelpanco">Michael Panco</a> changed <strong>Janie Masaya role to Editor</strong></td>
+			</tr>
+			<tr>
+				<td>Today 8:54 AM</td>
+				<td><a href="http://localhost:3001/fp-admin/users/michaelpanco">Michael Panco</a> change <strong> filename from gamer2442.html to gamerzone.html</strong></td>
+			</tr>
+			<tr>
+				<td>Today 8:54 AM</td>
+				<td><a href="http://localhost:3001/fp-admin/users/michaelpanco">Michael Panco</a> updated <strong>gamerzone.html</strong></td>
+			</tr>
+			<tr>
+				<td>Today 8:54 AM</td>
+				<td><a href="http://localhost:3001/fp-admin/users/michaelpanco">Michael Panco</a> updated <strong>gamer2442.html</strong></td>
+			</tr>
+		</tbody>
+	</table>
+		
+	</div>
+</div>

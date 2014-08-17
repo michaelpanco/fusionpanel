@@ -1,0 +1,114 @@
+<% if @my_permissions.include?("can_modify_widgets") && @record_count > 0 %>
+<div class="btn-group">
+    <a id="add-page" class="btn" data-no-turbolink="true" href="<%= admin_add_widget_path %>"><i class="icon-plus"></i> Create Widget</a>
+    <%= link_to raw('<i class="icon-remove"></i> Delete Widget(s)'), "javascript:void(0)", id: "delete-pages", class: "btn", "ng-click"=>"deleteSelected('#delete_pages')", "ng-disabled" => "deleteButton" %>
+</div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+
+<div class="row-fluid">
+    <div class="span4">
+        <h1><%= params["controller"].capitalize %></h1>
+    </div>
+    <% if @record_count > 0  %>
+    <div class="span8 ">
+        <div class="pull-right">
+            <div class="input-append">
+                <form name="search_page" method="GET" action="<%= admin_widget_path %>">
+                    <input name="search" class="span9" id="appendedInputButton" type="text" placeholder="Enter Widget Title" value="<%= @search_keyword %>">
+                    <button class="btn h40" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% end %>
+    <% if @search_keyword %>
+        <div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>
+    <% end %>
+</div>
+<% if @record_count > 0  %>
+<div class="mb20">
+    <div class="btn-group">
+        <button class="btn">
+            <% @stat_filter_value %> All Status
+        </button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <%= link_to "Active", :category => params[:category], :creator => params[:creator], :status => "active" %>
+            </li>
+            <li>
+                <%= link_to "Inactive", :category => params[:category], :creator => params[:creator], :status => "inactive"  %>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <%= link_to "All Status", :status => "all", :creator => params[:creator], :category => params[:category] %>
+            </li>
+        </ul>
+    </div>
+</div>
+<% end %>
+<% unless @widgets.empty?  %>
+<% delete_confirm = 'return confirm("Are you sure you want to delete the selected widget? \nNote: There\'s no undo.");return false;' %>
+<%= form_tag(admin_delete_widget_path, :id => 'delete_pages', method: "POST", :onsubmit => delete_confirm ) do %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% if @my_permissions.include?("can_modify_widgets") %>
+            <th><%= check_box_tag "page_all", "all", false, :id => "page_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @widgets.count.to_s + ")"   %></th>
+            <% end %>
+            <th>ID</th>
+            <th>Widget Name</th>
+            <th>Created By</th>
+            <th>Status</th>
+            <th class="hidden-phone">Last Modified</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @widgets.each do |widget| %>
+        <tr>
+            <% if @my_permissions.include?("can_modify_widgets") %>
+            <td><%= check_box_tag "widget_ids[]", widget.id, false, :class => 'checkbox_item', :id => "user_#{widget.id}", "ng-model"=>"widget" + widget.id.to_s, "ng-checked" => "masters","ng-click"=>"selectItem(widget"+widget.id.to_s+")"   %></td>
+            <% end %>
+            <td><%= widget.id %></td>
+            <td><%= link_to widget.title, admin_edit_widget_path(@admin_slug, widget.id), 'data-no-turbolink' => true  %></td>
+            <td><%= widget.user.fullname %></td>
+            <% if widget.status == "active" %>
+            <td><span class="label label-success"><%= widget.status %></span></td>
+            <% else %>
+            <td><span class="label"><%= widget.status %></span></td>
+            <% end %>
+            <td class="hidden-phone"><%= widget.modified %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<% end %>
+<div class="pull-right">
+    <%= paginate @widgets %>
+</div>
+<div style="clear:both"></div>
+<% else %>
+<% if @record_count > 0  %>
+<p>
+    No results were found for your request! <a href="<%= admin_widget_path %>">Back to Widgets.</a>
+</p>
+<% else %>
+<p>
+    No Widgets Available. <% if @my_permissions.include?("can_modify_widgets") %><a href="<%= admin_add_widget_path %>">create now?</a><% end %>
+</p>
+<% end %>
+<% end %>

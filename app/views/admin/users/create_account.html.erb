@@ -1,0 +1,30 @@
+<div class="container">
+	<div class="text-center mb20"><%=image_tag("fusionpanel_logo.png", alt: "Example Image", width: 360)%></div>
+	<%= form_for :users, url: admin_create_user_path, :html => {:name => 'form-create-user', :class=>"form-create-user"}  do |page_form| %>
+		<% if flash[:notice] %>
+		<div class="alert alert-success mb0">
+		<%= flash[:notice].html_safe %>
+		</div>
+		<% end %>
+		<% if flash[:error] %>
+		<div class="alert alert-error mb0">
+			<% flash[:error].each do |error_message| %>
+			<%= error_message %> <br />
+			<% end %>
+		</div>
+		<% end %>
+		<h2 class="form-signin-heading fsize14 text-center mt0">Create your Account</h2>
+		<%= page_form.hidden_field :token, :value=>@user_token %>
+		<%= page_form.text_field :fullname, :class=>"input-block-level", :placeholder=>"Fullname", :value=>@fullname %>
+		<%= page_form.text_field :username, :class=>"input-block-level", :placeholder=>"Username", :value=>@username, :autocomplete => :off %>
+		<%= page_form.text_field :email, :value=>@user_email, :class=>"input-block-level", :placeholder=>"Email", :disabled=>"disabled" %>
+		<%= page_form.password_field :password, :class=>"input-block-level", :placeholder=>"Password", :autocomplete => :off %>
+		<%= page_form.password_field :password_confirmation, :class=>"input-block-level", :placeholder=>"Confirm Password" %>
+		<div class="mt10">
+			<%= submit_tag("Create",:class=>"btn btn-large btn-primary pull-right") %>
+			<div class="clear"></div>
+		</div>
+
+	<% end %>
+</div> 
+

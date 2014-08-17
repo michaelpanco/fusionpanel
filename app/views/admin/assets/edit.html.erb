@@ -1,0 +1,37 @@
+<div class="btn-group">
+	<a href="<%= admin_asset_path %>" class="btn"><i class="icon-th-list"></i> Back to Assets</a>
+</div>
+<div class="row-fluid">
+	<h1>Edit File</h1>
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+<%= form_tag(admin_asset_update_file_path, method: "post", id: "updateSetting") do %>
+<input type="hidden" name="file_original_name" value="<%= @file_name %>"  >
+<input type="hidden" name="file_id" value="<%= @file_id %>"  >
+<input type="hidden" name="file_location" value="<%= @file_location %>"  >
+<span class="input_label">File Name</span>
+<input type="text" name="file_name" class="input-block-level w400" value="<%= @file_name %>"  >
+<span class="input_label">File Content</span>
+<textarea id="fileContent" name="file_content" class="input-block-level h300" ><%= raw( @file_content ) %></textarea>
+  <div class="btn-holder">
+    <a href="<%= admin_asset_path %>" class="btn btn-large pull-right">Cancel</a>
+    <%= submit_tag("Update",:class=>"btn btn-primary btn-large pull-right mr5") %>
+    <div class="clear"></div>
+</div>
+<% end %>

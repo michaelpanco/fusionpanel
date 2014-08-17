@@ -1,0 +1,40 @@
+<div class="btn-group">
+    <a href="<%= admin_template_path %>" class="btn"><i class="icon-th-large"></i> Back to Templates</a>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <h1>Edit Template</h1>
+    </div>
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+<% disabled_status = !@my_permissions.include?("can_modify_pages") %>
+<%= form_for :template, url: admin_update_template_path, :html => {:name => 'create_new_template'}  do |template_form| %>
+<span class="input_label">Template Name</span>
+
+<input type="text" name="templatename" class="input-block-level" value="<%= @template.name %>" ng-disabled="<%= disabled_status %>" />
+<span class="input_label">Template Content</span>
+<textarea id="pageTemplatecontent" name="templatecontent" class="input-block-level w400 h300" ><%= raw( @template_content ) %></textarea>
+<% if @my_permissions.include?("can_modify_templates") %>
+<div class="btn-holder">
+    <a href="<%= admin_template_path %>" class="btn btn-large pull-right">Cancel</a>
+    <%= submit_tag("Save",:class=>"btn btn-primary btn-large pull-right mr5") %>
+    <div class="clear"></div>
+</div>
+<% end %>
+
+<% end %>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fusionpanel</title>
+		<%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+		<%= stylesheet_link_tag "admin",params[:controller], "data-turbolinks-track" => true %>
+		<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+		<%= csrf_meta_tags %>
+		<%= javascript_tag do %>
+		window.appController = "<%= params[:controller] %>";
+		window.authenticityToken = "<%= form_authenticity_token %>";
+		window.baseURL = "<%= root_url %>";
+		window.adminSlug = "<%= @admin_slug %>";
+		<% end %>
+	</head>
+	<body ng-app="fusionpanel">
+
+		<%= yield %>
+
+		<footer class="footer text-center fsize12">
+			Fusionpanel v 0.1.3
+		</footer>
+		<script data-turbolinks-track="true" src="/assets/angular.min.js?body=1"></script>
+		<%= javascript_include_tag params[:controller] %>
+	</body>
+</html>

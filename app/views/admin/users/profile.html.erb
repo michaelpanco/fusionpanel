@@ -1,0 +1,147 @@
+<div class="mb20">
+	<div class="row-fluid">
+		<div class="span6">
+			<a href="<%= admin_user_path %>" class="btn"><i class="icon-user"></i> Back to Users</a>
+
+		</div>
+		<% if @my_permissions.include?("can_modify_users") && session[:user_id] != @user.id %>
+		<div class="span6 text-right">
+			<a id="change-role" href="#change-role-modal" class="btn" data-no-turbolink="true" data-toggle="modal" data-backdrop="static" data-keyboard="false" >Change Role</a>
+			<%= link_to 'Delete User', "javascript:void(0)", id: "delete-users", class: "btn btn-danger", "ng-click"=>"deleteSingleUser('#delete_users')" %>
+			<% delete_confirm = 'return confirm("Are you sure you want to delete the selected user? \nNote: There\'s no undo.");return false;' %>
+			<%= form_tag(admin_delete_user_path, :id => 'delete_users', method: "POST", :onsubmit => delete_confirm ) do %>
+			<input type="hidden" name="user_ids[]" value="<%= @user.id %>" />
+			<% end %>
+		</div>
+		<% end %>
+	</div>
+
+</div>
+
+<div class="row-fluid">
+
+	<div class="span2">
+		<img src="http://www.gravatar.com/avatar/<%= get_avatar_hash(@user.email) %>?s=180">
+	</div>
+
+	<div class="span10">
+		<h1 style="display:inline"><%= @user.fullname %></h1><span class="fsize20 cFaded">(<%= @user.username %>)</span>
+		<div class="user-role fsize18 mb10" ng-init="usersRole='<%= @user.role.name %>'">
+			{{usersRole}} <span class="label label-success"><%= @user.status %></span>
+		</div>
+		<div class="profile_div_info">
+			Email : <%= @user.email %>
+		</div>
+		<% if @user.page.count > 0 %>
+		<div class="profile_div_info">
+			Pages : <%= link_to @user.page.count, admin_page_path(:creator => @user.id), :class=>'badge badge-info' %>
+		</div>
+		<% else %>
+		<div class="profile_div_info">
+			Pages : <span class="badge badge-info"><%= @user.page.count %></span>
+		</div>
+		<% end %>
+		<div class="profile_div_info">
+			Date joined : <%= @user.date_joined %>
+		</div>
+		<% if session[:user_id] == @user.id %>
+		<a href="#change-password-modal" class="btn mt10" data-no-turbolink="true" data-toggle="modal" data-backdrop="static" data-keyboard="false" >Change Password</a>
+		<% end %>
+	</div>
+</div>
+<p class="last_activity_label">
+	Last Activities
+</p>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Date and Time</th>
+			<th>Activity</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		<% @user.activity[0..5].each do |admin_activity| %>
+		<tr>
+			<td><%= admin_activity.date_created %></td>
+			<% activity_dots = (admin_activity.activity_message.length >= 85 )? " ..." : "" %>
+			<% activity = admin_activity.activity_message[0,85] + activity_dots %>
+			<% if admin_activity.user %>
+			<td><a href="<%= root_url + session[:admin_slug] + "/users/" + admin_activity.user.username %>"><%= admin_activity.user.fullname %></a> <%= activity.html_safe %></td>
+			<% else %>
+			<td>(Deleted User) <%= activity.html_safe %></td>
+			<% end %>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<div id="change-role-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button id="x-close-modal"  type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="modal-header">Change Role</h3>
+	</div>
+
+	<div class="modal-body">
+		<div class="message-status" ng-bind-html-unsafe="messageStatus"></div>
+		<form name="change-user-role" id="change-user-role" class="ng-pristine ng-valid" accept-charset="UTF-8">
+			<span class="input_label">Change role to :</span>
+			<input type="hidden" ng-model="userID" value="{{userID}}" ng-init="userID='<%= @user.id %>'" />
+			<input type="hidden" ng-model="roleIDValue" value="{{roleIDValue}}" ng-init="roleIDValue='<%= @user.role.id %>'" />
+			<!-- Load User Role Dropdown lists -->
+			<div class="btn-group">
+				<button class="btn btn-large w150" ng-init="roleValue='<%= @user.role.name %>'">
+					{{roleValue}}
+				</button>
+				<button data-toggle="dropdown" class="btn btn-large dropdown-toggle">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<% @roles.each do |role| %>
+					<li>
+						<a href="" ng-click="selectRole('<%= role.id %>','<%= role.name %>')"><%= role.name %></a>
+					</li>
+					<% end %>
+				</ul>
+			</div>
+			<!-- End here -->
+		</form>
+	</div>
+
+	<div class="modal-footer">
+		<a id="create-category-cancel" ng-disabled="buttonControl" class="btn btn-large" data-dismiss="modal" aria-hidden="true" ng-click="clearMessageStatus()">Cancel</a>
+		<button ng-disabled="buttonControl" type="submit" class="btn btn-primary btn-large" ng-click="changeRole('/users/changerole')" >
+			Update
+		</button>
+	</div>
+</div>
+
+<div id="change-password-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-header">
+		<button id="x-close-modal"  type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="modal-header">Change Password</h3>
+	</div>
+
+	<div class="modal-body">
+		<div class="message-status" ng-bind-html-unsafe="messagePasswordStatus"></div>
+		<form name="change-account-password" id="change-account-password" class="ng-pristine ng-valid" accept-charset="UTF-8">
+			<span class="input_label">Type Old Password</span>
+			<input type="password" class="input-block-level" ng-model="oldPassword" value="" />
+			<span class="input_label">Type New Password</span>
+			<input type="password" class="input-block-level" ng-model="newPassword" value="" />
+			<span class="input_label">Re-Type New Password</span>
+			<input type="password" class="input-block-level" ng-model="renewPassword" value="" />
+		</form>
+	</div>
+
+	<div class="modal-footer">
+		<a id="create-category-cancel" ng-disabled="buttonControl" class="btn btn-large" data-dismiss="modal" aria-hidden="true" ng-click="clearMessageStatus()">Cancel</a>
+		<button ng-disabled="buttonControl" type="submit" class="btn btn-primary btn-large" ng-click="changePassword('/users/changepassword')" >
+			Change
+		</button>
+	</div>
+</div>

@@ -1,0 +1,143 @@
+<% if @my_permissions.include?("can_invite_users") %>
+<div class="btn-group">
+    <a id="add-user" role="button" class="btn" data-no-turbolink="true" href="#add-user-modal" data-toggle="modal" data-backdrop="static" data-keyboard="false" ng-click="clearInviteUserForm()" ><i class="icon-plus"></i> Add User</a>
+    <% end %>
+    <% if @my_permissions.include?("can_modify_users") %>
+    <%= link_to raw('<i class="icon-remove"></i> Delete User(s)'), "javascript:void(0)", id: "delete-users", class: "btn", "ng-click"=>"deleteSelected('#delete_users')", "ng-disabled" => "deleteButton" %>
+</div>
+<% end %>
+
+<% if flash[:error] %>
+<div class="alert alert-error mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:error].html_safe %>
+</div>
+<% end %>
+<div class="row-fluid">
+    <div class="span5">
+        <h1><%= params["controller"].capitalize %></h1>
+    </div>
+    <div class="span7">
+        <div class="pull-right">
+            <div class="input-append">
+                <form name="search" method="GET" action="<%= admin_user_path %>">
+                    <input name="search" class="span9" id="appendedInputButton" type="text" placeholder="Enter User's info">
+                    <button class="btn h40" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<% if @my_permissions.include?("can_view_roles") %>
+<a href="<%= admin_user_role_path %>" class="btn mb20"><i class="icon-glass"></i> User Role</a>
+<% end %>
+<% if @search_keyword %>
+<div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>
+<% end %>
+<% unless @users.empty?  %>
+
+<% delete_confirm = 'return confirm("Are you sure you want to delete the selected user? \nNote: There\'s no undo.");return false;' %>
+<%= form_tag(admin_delete_user_path, :id => 'delete_users', method: "POST", :onsubmit => delete_confirm ) do %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% if @my_permissions.include?("can_modify_users") %>
+            <th><%= check_box_tag "user_all", "all", false, :id => "user_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @users.count.to_s + ")"  %></th>
+            <% end %>
+            <th>ID</th>
+            <th>Name</th>
+            <th class="hidden-phone hidden-tablet">Username</th>
+            <th>Role</th>
+            <th class="hidden-phone">Email</th>
+            <th>Pages</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @users.each do |user| %>
+        <% user_status = user.status == "active" ? "" : " class=warning" %>
+        <tr>
+            <% if @my_permissions.include?("can_modify_users") %>
+            <td><%= check_box_tag "user_ids[]", user.id, false, :class => 'checkbox_item', :id => "user_#{user.id}", "ng-model"=>"user"+user.id.to_s, "ng-checked" => "masters","ng-click"=>"selectItem(user"+user.id.to_s+")"  %></td>
+            <% end %>
+            <td><%= user.id %></td>
+            <td><img class="hidden-phone mr10" src="http://www.gravatar.com/avatar/<%= get_avatar_hash(user.email) %>?s=22"> <%= link_to user.fullname, admin_user_path + "/" + user.username %> </td>
+
+            <td class="hidden-phone hidden-tablet"><%= user.username %></td>
+            <td><%= user.role.name %></td>
+            <td class="hidden-phone"><%= user.email %></td>
+            <% if user.page.count > 0 %>
+            <td><%= link_to user.page.count, admin_page_path(:creator => user.id), :class => "badge badge-info" %></td>
+            <% else %>
+            <td><span class="badge"><%= user.page.count %></span></td>
+            <% end %>
+            <% if user.status == "active" %>
+            <td><span class="label label-success"><%= user.status %></span></td>
+            <% else %>
+            <td><span class="label label-warning"><%= user.status %></span></td>
+            <% end %>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+<% end %>
+<div class="pull-right">
+    <%= paginate @users %>
+</div>
+<div style="clear:both"></div>
+<% else %>
+<% if @record_count > 0  %>
+<p>
+    No results were found for your request! <a href="<%= admin_user_path %>">Back to Users.</a>
+</p>
+<% else %>
+<p>
+    You have not created any user. <a href="<%= admin_add_page_path %>">create now?</a>
+</p>
+<% end %>
+<% end %>
+
+<div id="add-user-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button id="x-close-modal" type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h3 id="modal-header">Add User</h3>
+    </div>
+    <div class="modal-body">
+        <div class="message-status" ng-bind-html-unsafe="messageStatus"></div>
+        
+        <form name="add-new-user" class="ng-pristine ng-valid">
+                <span class="input_label">Please enter the email address of the user that you want to add. A message will be automatically generated by our server and sent to their e-mail address.</span>
+                <span class="input_label">User Email Address</span>
+                <input type="text" name="userRequestEmail" id="user_request_email" class="input-block-level" ng-model="roleEmailValue">
+                <input type="hidden" value="{{roleIDValue}}" name="userRequestRole" id="user_request_role" class="role_id">
+        
+        <div class="btn-group mb10">
+            <a href="javascript:void(0)" class="btn btn-role btn-large w140">{{roleValue}}</a>
+            <button data-toggle="dropdown" class="btn btn-large dropdown-toggle">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu role-menu">
+                <% @roles.each do |role| %>
+                <li>
+                    <a data-role-id="<%= role.id %>" href="" ng-click="selectRole('<%= role.id %>','<%= role.name %>')"><%= role.name %></a>
+                </li>
+                <% end %>
+            </ul>
+        </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a id="invite-user-cancel" ng-disabled="buttonControl" class="btn btn-large link-cancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
+        <button ng-disabled="buttonControl" type="submit" class="btn btn-primary btn-large btn-cancel" ng-click="inviteUser('/users/add')">
+            Invite
+        </button>
+    </div>
+</div>
+

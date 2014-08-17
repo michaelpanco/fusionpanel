@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  description: MyString
+  file_type: MyString
+  url: MyString
+  owner: 
+  parent: 
+  visibility: MyString
+
+two:
+  name: MyString
+  description: MyString
+  file_type: MyString
+  url: MyString
+  owner: 
+  parent: 
+  visibility: MyString

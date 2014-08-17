@@ -1,0 +1,95 @@
+<% if @my_permissions.include?("can_modify_roles") %>
+<div class="btn-group">
+    <a id="add-user" role="button" class="btn" data-no-turbolink="true" href="<%= admin_user_addrole_path %>" ><i class="icon-plus"></i> Add Role</a>
+    <%= link_to raw('<i class="icon-remove"></i> Delete Role(s)'), "javascript:void(0)", id: "delete-users", class: "btn", "ng-click"=>"deleteSelected('#delete_users')", "ng-disabled" => "deleteButton" %>
+</div>
+<% end %>
+<div class="row-fluid">
+    <div class="span5">
+        <h1>User Role</h1>
+    </div>
+    <div class="span7">
+        <div class="pull-right">
+            <div class="input-append">
+                <form name="search" method="GET" action="<%= admin_user_role_path %>">
+                    <input name="search" class="span9" id="appendedInputButton" type="text" placeholder="Enter Role Name">
+                    <button class="btn h40" type="submit">
+                        Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <% if @search_keyword %>
+    <div class="mb20">Search Result for <strong>"<%= @search_keyword %>"</strong></div>
+    <% end %>
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+<a href="<%= admin_user_path %>" class="btn mb20"><i class="icon-user"></i> Back to Users</a>
+<% unless @roles.empty?  %>
+
+<% delete_confirm = 'return confirm("Are you sure you want to delete the selected role? \nNote: There\'s no undo.");return false;' %>
+<%= form_tag(admin_delete_role_path, :id => 'delete_users', method: "POST", :onsubmit => delete_confirm ) do %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <% if @my_permissions.include?("can_modify_roles") %>
+            <th><%= check_box_tag "role_all", "all", false, :id => "role_all", "ng-model" => "masters", "ng-checked"=>"masterSelect", "ng-click"=>"selectAll(masters," + @roles.count.to_s + ")"  %></th>
+            <% end %>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @roles.each do |role| %>
+        <tr>
+            <% if @my_permissions.include?("can_modify_roles") %>
+            <td><%= check_box_tag "role_ids[]", role.id, false, :class => 'checkbox_item', :id => "role_#{role.id}", "ng-model"=>"role"+role.id.to_s, "ng-checked" => role.id == 1 ? '' : "masters","ng-click"=>"selectItem(role"+role.id.to_s+")","ng-disabled" => role.id == 1 ? 'true' : 'false' %></td>
+            <% end %>
+            <td><%= role.id %></td>
+            <td><%= link_to role.name, admin_user_editrole_path(@admin_slug, role.id), 'data-no-turbolink' => true  %></td>
+            <% if role.status == 'active' %>
+            <td><span class="label label-success"><%= role.status %></span> </td>
+            <% else %>
+             <td><span class="label"><%= role.status %></span> </td>
+            <% end %>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+<% end %>
+<div class="pull-right">
+    <%= paginate @roles %>
+</div>
+<div style="clear:both"></div>
+<% else %>
+<% if @record_count > 0  %>
+<p>
+    No results were found for your request! <a href="<%= admin_user_role_path %>">Back to Roles.</a>
+</p>
+<% else %>
+<p>
+    You have not created any role. <a href="<%= admin_user_addrole_path %>">create now?</a>
+</p>
+<% end %>
+<% end %>

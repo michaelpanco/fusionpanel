@@ -1,0 +1,66 @@
+<div class="btn-group">
+    <a href="<%= admin_user_role_path %>" class="btn"><i class="icon-file"></i> Back to Roles</a>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <h1>Edit Role</h1>
+    </div>
+</div>
+<% if flash[:error] %>
+<div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <% flash[:error].each do |error_message| %>
+    <%= error_message %>
+    <br />
+    <% end %>
+</div>
+<% end %>
+<% if flash[:notice] %>
+<div class="alert alert-success mt15">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    <%= flash[:notice].html_safe %>
+</div>
+<% end %>
+<% disabled_status = (@role.id == 1 or not @my_permissions.include?("can_modify_roles")) %>
+<%= form_for :role, url: admin_user_updatetrole_path, :html => {:name => 'edit_page'} do |role_form| %>
+<span class="input_label">Role Name</span>
+<% if @role.id != 1  %>
+<%= role_form.text_field :name, :class=>"input-block-level", "ng-disabled"=>disabled_status  %>
+<% else %>
+<%= role_form.text_field :name, :class=>"input-block-level" , "disabled"=>"disabled" %>
+<% end %>
+            <span class="input_label">Page Status</span>
+            <%= role_form.hidden_field :status, :class=>"status", :value=>"{{statusValue.toLowerCase()}}" %>
+            <div class="btn-group mb10">
+                <a href="javascript:void(0)" class="btn btn-stat btn-large w75 fsize14" ng-init="statusValue='<%= @role.status.capitalize %>'" ng-disabled="<%= disabled_status %>">{{statusValue}}</a>
+                <button data-toggle="dropdown" class="btn btn-large dropdown-toggle" ng-disabled="<%= disabled_status %>">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu status-menu">
+                    <li>
+                        <a href="" ng-click="selectStatus('Active')">Active</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="selectStatus('Inactive')">Inactive</a>
+                    </li>
+                </ul>
+            </div>
+<span class="input_label">Permission</span>
+<% @roles.each do |role| %>
+<% checkval = @role.permissions.gsub(' ','').split(',').include?(role) ? 'checked' : ''  %>
+
+<label><input type="checkbox" name="permissions[]" value="<%= role %>" <%= checkval %>  ng-disabled="<%= disabled_status %>" > <%= role %></label>
+<% end %>
+<% if @role.id != 1  %>
+    <% if @my_permissions.include?("can_modify_roles") %>
+    <div class="btn-holder">
+        <%= submit_tag("Update",:class=>"btn btn-primary btn-large mr5") %>
+        <a href="<%= admin_user_role_path %>" class="btn btn-large">Cancel</a>
+    </div>
+    <% end %>
+<% end %>
+<% end %>
