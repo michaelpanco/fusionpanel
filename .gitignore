@@ -16,6 +16,8 @@
 /log/*.log
 /tmp
 
+/public/assets
+
 app/views/templates
 
 !app/views/templates/default.html.erb

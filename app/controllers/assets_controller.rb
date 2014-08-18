@@ -37,6 +37,9 @@ class AssetsController < ApplicationController
     <% if @folder_list.empty? %>
     <p>No file or folder Available</p>
     <% end %>
+    
+    <% image_ext_list = ["png","jpg","jpeg","gif","bmp"]  %>
+    
     <% @folder_list.each do |file| %>
     <div class="fileitem">
         <% file_type = file.file_type.split("/").first %>
@@ -44,9 +47,16 @@ class AssetsController < ApplicationController
         <% if file_type == "appfolder"  %>
         <img src="<%= root_url %>images/folder.png" width="60" file-directory file-id="<%= file.id %>" />
         <% elsif file_type == "image"  %>
-        <a class="fancybox" href="<%= root_url + "assets" + file.location %>">
-        <img src="<%= root_url + "assets" + file.location %>" style="width:60px;height:60px"  />
-        </a>
+         
+	        <% if image_ext_list.include? file_type_ext %>
+		        <a class="fancybox" href="<%= root_url + "assets" + file.location %>">
+		        <img src="<%= root_url + "assets" + file.location %>" style="width:60px;height:60px"  />
+		        <% file_type_ext %>
+		        </a>
+	        <% else %>
+	        	<a href="<%= root_url + @admin_slug + "/assets/download/" + file.id.to_s %>"><img src="<%= root_url %>images/file_icon/default.png" /></a>
+	        <% end %>
+        
         <% else %>
           <%
           case file_type_ext
