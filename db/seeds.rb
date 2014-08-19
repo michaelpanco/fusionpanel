@@ -88,3 +88,15 @@ end
 
 # Traffic.update_all("status = '200'")
 
+
+target_file  = "app/views/templates"
+File.open(File.join(target_file, 'defaulst.html.erb'), 'w') do |f|
+  f.puts "contents"
+    f.puts "contents"
+      f.puts "contents"
+        f.puts "contents"
+          f.puts "contents"
+end
+
+
+
