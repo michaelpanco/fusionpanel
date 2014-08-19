@@ -105,7 +105,7 @@ File.open(target_file, "w+") do |f|
 	f.puts '<body>'
 	f.puts '<h1><%= @content_title %></h1>'
 	f.puts '<p><%= @content %></p>'
-	f.puts '<body>'
+	f.puts '</body>'
 	f.puts '</html>'
 end
 
