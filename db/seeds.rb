@@ -99,6 +99,14 @@ target_file  = "app/views/templates/default.html.erb"
 File.open(target_file, "w+") do |f|
   f.puts '<!doctype html>'
   f.puts '<html lang="en">'
+  f.puts '<head>'
+	f.puts '<title><%= @page_title %></title>'
+	f.puts '</head>'
+	f.puts '<body>'
+	f.puts '<h1><%= @content_title %></h1>'
+	f.puts '<p><%= @content %></p>'
+	f.puts '<body>'
+	f.puts '</html>'
 end
 
 
