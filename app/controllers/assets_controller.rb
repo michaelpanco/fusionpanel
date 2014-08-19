@@ -279,7 +279,7 @@ class AssetsController < ApplicationController
   def download
     file_id = params[:file_id]
     file = Asset.find_by_id(file_id)
-    send_data(root_url + 'assets' + file.location, :filename => file.name)
+    send_file  'public/assets' + file.location, :type=>file.file_type, :x_sendfile=>true
   end
 
   def delete
