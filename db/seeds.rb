@@ -88,15 +88,17 @@ end
 
 # Traffic.update_all("status = '200'")
 
+require 'fileutils'
 
-target_file  = "app/views/templates"
-File.open(File.join(target_file, 'defaulst.html.erb'), 'w') do |f|
-  f.puts "contents"
-    f.puts "contents"
-      f.puts "contents"
-        f.puts "contents"
-          f.puts "contents"
+dir_path = 'app/views/templates'
+
+FileUtils::mkdir_p dir_path
+
+target_file  = "app/views/templates/default.html.erb"
+
+File.open(target_file, "w+") do |f|
+  f.puts '<!doctype html>'
+  f.puts '<html lang="en">'
 end
-
 
 
