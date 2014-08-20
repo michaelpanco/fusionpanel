@@ -5,8 +5,9 @@ class MainController < ApplicationController
   
   def index
   	
+  	require 'uri'
+  	
   	if is_homepage_setup?
-  		
   		if active_website?
 	  		homepage = Page.find(Setting.find_by_setting_name('homepage').setting_value)
 		    @page_title = homepage.meta.page_title.empty? ? homepage.content_title : homepage.meta.page_title
@@ -14,6 +15,8 @@ class MainController < ApplicationController
 		    @content = homepage.content.html_safe
 		    @status = "success"
 		    @status_response = '200'
+		    request_url = request.original_url
+		    @active_page = URI(request_url).path.split('/').second
 		    render homepage.template.location
   		else
         @status_response = '403'
@@ -36,6 +39,8 @@ class MainController < ApplicationController
         @content_title = page.content_title
         @content = page.content.html_safe
         @status_response = '200'
+        request_url = request.original_url
+        @active_page = URI(request_url).path.split('/').second
         render page.template.location
       else
         @status_response = '404'

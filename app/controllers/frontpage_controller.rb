@@ -1,6 +1,11 @@
 class FrontpageController < ApplicationController
+	
   layout false
+  
   def index
+  	
+  	require 'uri'
+  	
     page_urls = params[:pagecats]
     page_slug = params[:page]
     page = Page.where("url_slug = ?", page_slug).take
@@ -14,6 +19,8 @@ class FrontpageController < ApplicationController
         @content_title = page.content_title
         @content = page.content.html_safe
         @status_response = '200'
+        request_url = request.original_url
+        @active_page = URI(request_url).path.split('/').second
         render page.template.location
       else
         @status_response = '404'
@@ -27,6 +34,7 @@ class FrontpageController < ApplicationController
         @content_title = page.content_title
         @content = page.content.html_safe
         @status_response = '200'
+        @active_page = URI(request_url).path.split('/').second
         render page.template.location
       else
         @status_response = '404'

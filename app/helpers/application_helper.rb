@@ -18,9 +18,17 @@ module ApplicationHelper
 		if widget
 		widget.content.html_safe
 		else
-			"<span style='color:#FC0004'>Widget not found.</span>".html_safe
+			"<span style='color:#FC0004'>Widget '#{id_or_alias}' not found.</span>".html_safe
 		end
 
+	end
+	
+	def set_active menu, active_menu
+		
+		if menu == active_menu
+			"active"
+		end
+		
 	end
 
 end
