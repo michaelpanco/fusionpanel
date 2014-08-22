@@ -2,7 +2,7 @@ categoryModule = angular.module 'fusionpanel', []
 
 categoryController = ($scope, $http) ->
   $scope.selectedItem = 0
-  $scope.parentCategoryID = 0
+  $scope.parentCategoryID = 1
   $scope.deleteButton = true
   $scope.categoryValue = "No Category"
   $scope.statusValue = "Active"
