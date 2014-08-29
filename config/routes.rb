@@ -3,7 +3,8 @@ Fusionpanel::Application.routes.draw do
   mount Ckeditor::Engine => '/ckeditor'
   root 'main#index'
 
-
+	post 'sendmessage' => 'frontpage#sendmessage', as: 'sendmessage'
+	
   # User temporary control routes
   get 'adduser' => 'admin#add_user', as: :add_user
   post 'adduser' => 'admin#create_user', as: :create_user
