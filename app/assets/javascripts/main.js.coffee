@@ -76,6 +76,6 @@ mainController = ($scope, $http) ->
     elem_id = $(this).attr('id');
     load_type = $(this).attr('data-load-type');
     $http.get(baseURL + adminSlug + '/visitorinfo/' + load_type).success (data) ->
-      document.getElementById(elem_id).innerHTML= data.visitor_count
+      document.getElementById(elem_id).innerHTML= data.visitor_count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 mainModule.controller appController, mainController
