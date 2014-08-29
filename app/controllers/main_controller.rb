@@ -17,6 +17,7 @@ class MainController < ApplicationController
 		    @status_response = '200'
 		    request_url = request.original_url
 		    @active_page = URI(request_url).path.split('/').second
+		    @authenticity_token = form_authenticity_token
 		    render homepage.template.location
   		else
         @status_response = '403'
@@ -41,6 +42,7 @@ class MainController < ApplicationController
         @status_response = '200'
         request_url = request.original_url
         @active_page = URI(request_url).path.split('/').second
+        @authenticity_token = form_authenticity_token
         render page.template.location
       else
         @status_response = '404'
