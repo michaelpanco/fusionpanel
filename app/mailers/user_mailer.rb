@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
 	
-	default from: 'fp@michaelpanco.com'
+	default from: 'hi@michaelpanco.com'
 	
 	def send_user_invitation(email, link, role, inviter)
 		UserMailer.smtp_settings = {
@@ -36,6 +36,26 @@ class UserMailer < ActionMailer::Base
 		@company_name = company_name
 		
 		mail(to: email, subject: 'Fusionpanel - Reset Password')
+	end
+	
+	
+	def send_message(visitor_name, visitor_email, visitor_subject, visitor_message)
+		
+		UserMailer.smtp_settings = {
+			:address              => Setting.find_by_setting_name('smtp_address').setting_value,
+			:port                 => Setting.find_by_setting_name('smtp_port').setting_value, #465 , 587
+			:domain               => Setting.find_by_setting_name('smtp_domain').setting_value,
+			:user_name            => Setting.find_by_setting_name('smtp_username').setting_value,
+			:password             => Setting.find_by_setting_name('smtp_password').setting_value,
+			:authentication       => :plain,
+			:enable_starttls_auto => true  }
+
+		@name = visitor_name
+		@email = visitor_email
+		@subject = visitor_subject
+		@message = visitor_message
+		
+		mail(to: 'mhike_v2@yahoo.com', subject: visitor_subject)
 	end
 
 end
