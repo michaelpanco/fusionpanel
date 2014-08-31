@@ -76,7 +76,8 @@ admin_settings_values = {
   "smtp_port" => "",
   "smtp_domain" => "",
   "smtp_username" => "",
-  "smtp_password" => ""
+  "smtp_password" => "",
+  "admin_email" => "me@myemail.com"
 
 }
 

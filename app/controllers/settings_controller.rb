@@ -40,6 +40,7 @@ class SettingsController < ApplicationController
       admin_settings["smtp_domain"] = Setting.find_by_setting_name('smtp_domain').setting_value
       admin_settings["smtp_username"] = Setting.find_by_setting_name('smtp_username').setting_value
       admin_settings["smtp_password"] = Setting.find_by_setting_name('smtp_password').setting_value
+      admin_settings["admin_email"] = Setting.find_by_setting_name('admin_email').setting_value
       
       homepage_setting_value = Setting.find_by_setting_name('homepage').setting_value
       admin_settings["homepage_id"] = !homepage_setting_value.empty? ? homepage_setting_value : nil
@@ -70,6 +71,7 @@ class SettingsController < ApplicationController
         5 => { "setting_value" => params[:homepage] },
         6 => { "setting_value" => params[:generic_meta_description] },
         7 => { "setting_value" => params[:generic_meta_keywords] },
+        13 => { "setting_value" => params[:admin_email] },
       }
   
       additional_block_ip = params[:block_ips].split("\r\n") - block_ips

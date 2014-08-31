@@ -55,7 +55,7 @@ class UserMailer < ActionMailer::Base
 		@subject = visitor_subject
 		@message = visitor_message
 		
-		mail(to: 'mhike_v2@yahoo.com', subject: visitor_subject)
+		mail(to: Setting.find_by_setting_name("admin_email").setting_value, subject: visitor_subject)
 	end
 
 end
