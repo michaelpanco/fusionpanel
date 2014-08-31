@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
 	include PageCategory
-
+	
 	layout :set_layout
 	before_action :require_login, :check_admin_slug
 	

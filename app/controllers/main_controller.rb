@@ -2,6 +2,7 @@ class MainController < ApplicationController
 	
 	require 'securerandom'
   layout :set_layout_main
+  include PageMeta
   
   def index
   	
@@ -18,6 +19,7 @@ class MainController < ApplicationController
 		    request_url = request.original_url
 		    @active_page = URI(request_url).path.split('/').second
 		    @authenticity_token = form_authenticity_token
+		    @meta_tags = PageMeta.create_meta_tags homepage.meta.page_keywords, homepage.meta.page_description, homepage.meta.no_index, homepage.meta.no_follow
 		    render homepage.template.location
   		else
         @status_response = '403'
@@ -43,6 +45,7 @@ class MainController < ApplicationController
         request_url = request.original_url
         @active_page = URI(request_url).path.split('/').second
         @authenticity_token = form_authenticity_token
+        @meta_tags = PageMeta.create_meta_tags page.meta.page_keywords, page.meta.page_description, page.meta.no_index, page.meta.no_follow
         render page.template.location
       else
         @status_response = '404'

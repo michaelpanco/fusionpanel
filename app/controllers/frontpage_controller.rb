@@ -2,6 +2,7 @@ class FrontpageController < ApplicationController
 	
   layout false
   skip_before_action :verify_authenticity_token, :only => [:sendmessage]
+  include PageMeta
   
   def index
   	
@@ -23,6 +24,7 @@ class FrontpageController < ApplicationController
         request_url = request.original_url
         @active_page = URI(request_url).path.split('/').second
         @authenticity_token = form_authenticity_token
+        @meta_tags = PageMeta.create_meta_tags page.meta.page_keywords, page.meta.page_description, page.meta.no_index, page.meta.no_follow
         render page.template.location
       else
         @status_response = '404'
@@ -38,6 +40,7 @@ class FrontpageController < ApplicationController
         @status_response = '200'
         @active_page = URI(request_url).path.split('/').second
         @authenticity_token = form_authenticity_token
+        @meta_tags = PageMeta.create_meta_tags page.meta.page_keywords, page.meta.page_description, page.meta.no_index, page.meta.no_follow
         render page.template.location
       else
         @status_response = '404'
